@@ -1,16 +1,25 @@
-export interface Website {
-  ID: string;
-  VALUE_TYPE: string;
+// contact.model.ts (hoặc tương tự)
+export interface Phone {
   VALUE: string;
-  TYPE_ID: string;
+  VALUE_TYPE: string;
+}
+
+export interface Email {
+  VALUE: string;
+  VALUE_TYPE: string;
+}
+
+export interface Website {
+  VALUE: string;
+  VALUE_TYPE: string;
 }
 
 export interface Contact {
-  ID?: string;
   NAME: string;
-  BANK_NAME?: string;
-  ADDRESS?: string;
-  PHONE?: { VALUE: string; VALUE_TYPE: string }[];
-  EMAIL?: { VALUE: string; VALUE_TYPE: string }[];
-  WEBSITE?: Website[]; // Sử dụng kiểu Website[] cho WEBSITE
+  ADDRESS: string;
+  PHONE: Phone[];
+  EMAIL: Email[];
+  WEBSITE: Website[];
+  BANK_NAME: string;
+  SOTK: string;
 }

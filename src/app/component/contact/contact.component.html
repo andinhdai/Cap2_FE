@@ -2,168 +2,196 @@
   <h1 class="text-center font-bold uppercase text-lg">Contact List</h1>
   <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
-        <tr>
-            <th class="css-thead">Tên</th>
-            <th class="css-thead">Địa chỉ</th>
-            <th class="css-thead">Số điện thoại</th>
-            <th class="css-thead">Email</th>
-            <th class="css-thead">Website</th>
-            <th class="css-thead">Ngân hàng</th>
-            <th class="css-thead">Số tài khoản</th>
-            <th class="css-thead">Actions</th>
-        </tr>
+      <tr>
+        <th class="css-thead">Tên</th>
+        <th class="css-thead">Địa chỉ</th>
+        <th class="css-thead">Số điện thoại</th>
+        <th class="css-thead">Email</th>
+        <th class="css-thead">Website</th>
+        <th class="css-thead">Ngân hàng</th>
+        <th class="css-thead">Số tài khoản</th>
+        <th class="css-thead">Actions</th>
+      </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let contact of contacts">
-            <td class="css-td font-medium text-blue-700">{{ contact.NAME }}</td>
-            <td class="css-td text-gray-500">{{ contact.ADDRESS }}</td>
-            <td class="css-td text-gray-500">
-                <ul>
-                    <li *ngFor="let phone of contact.PHONE">{{ phone.VALUE }} ({{ phone.VALUE_TYPE }})</li>
-                </ul>
-            </td>
-            <td class="css-td text-gray-500">
-                <ul>
-                    <li *ngFor="let email of contact.EMAIL">{{ email.VALUE }} ({{ email.VALUE_TYPE }})</li>
-                </ul>
-            </td>
-            <td class="css-td text-gray-500">
-                <ul>
-                    <li *ngFor="let web of contact.WEBSITE">{{ web.VALUE }} ({{ web.VALUE_TYPE }})</li>
-                </ul>
-            </td>
-            <td class="css-td text-gray-500">{{ contact.BANK_NAME }}</td>
-            <td class="css-td text-gray-500">{{ contact.SOTK }}</td>
-            <td class="css-td font-medium">
-                <button class="text-indigo-600 hover:text-indigo-900" (click)="editContact(contact)">Edit</button>
-                <button class="text-red-600 hover:text-red-900 ml-4" (click)="deleteContact(contact.ID)">Delete</button>
-            </td>
-        </tr>
+      <tr *ngFor="let contact of contacts">
+        <td class="css-td font-medium text-blue-700">{{ contact.NAME }}</td>
+        <td class="css-td text-gray-500">{{ contact.ADDRESS }}</td>
+        <td class="css-td text-gray-500">
+          <ul>
+            <li *ngFor="let phone of contact.PHONE">{{ phone.VALUE }} ({{ phone.VALUE_TYPE }})</li>
+          </ul>
+        </td>
+        <td class="css-td text-gray-500">
+          <ul>
+            <li *ngFor="let email of contact.EMAIL">{{ email.VALUE }} ({{ email.VALUE_TYPE }})</li>
+          </ul>
+        </td>
+        <td class="css-td text-gray-500">
+          <ul>
+            <li *ngFor="let web of contact.WEBSITE">{{ web.VALUE }} ({{ web.VALUE_TYPE }})</li>
+          </ul>
+        </td>
+        <td class="css-td text-gray-500">{{ contact.BANK_NAME }}</td>
+        <td class="css-td text-gray-500">{{ contact.SOTK }}</td>
+        <td class="css-td font-medium">
+          <button class="text-indigo-600 hover:text-indigo-900" (click)="editContact(contact)">Edit</button>
+          <button class="text-red-600 hover:text-red-900 ml-4" (click)="deleteContact(contact.ID)">Delete</button>
+        </td>
+      </tr>
     </tbody>
-</table>
-<div *ngIf="editingContact" class="p-4 bg-white rounded shadow-md">
-  <h2 class="text-xl font-bold mb-4">Edit Contact</h2>
-  <form (ngSubmit)="updateContact()">
-    <label class="block mb-2">
-      <span class="text-gray-700">Name:</span>
-      <input [(ngModel)]="editingContact.NAME" name="name" class="add-input ">
-    </label>
-    
-    <label class="block mb-2">
-      <span class="text-gray-700">Address:</span>
-      <input [(ngModel)]="editingContact.ADDRESS" name="address" class="add-input ">
-    </label>
+  </table>
+  
+  <div *ngIf="editingContact" class="p-4 bg-white rounded shadow-md">
+    <h2 class="text-xl font-bold mb-4">Edit Contact</h2>
+    <form [formGroup]="contactForm" (ngSubmit)="updateContact()">
+      <label class="block mb-2">
+        <span class="text-gray-700">Name:</span>
+        <input formControlName="NAME" class="add-input">
+      </label>
+      
+      <label class="block mb-2">
+        <span class="text-gray-700">Address:</span>
+        <input formControlName="ADDRESS" class="add-input">
+      </label>
 
-    <label class="block mb-2">
-      <span class="text-gray-700">Phone(s):</span>
-      <div *ngFor="let phone of editingContact.PHONE; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="phone.VALUE" name="phone{{i}}" class="add-select w-full">
-        <select [(ngModel)]="phone.VALUE_TYPE" name="phoneType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of phoneValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(editingContact, 'PHONE', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(editingContact, 'PHONE')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Phone</button>
-    </label>
+      <label class="block mb-2">
+        <span class="text-gray-700">Phone(s):</span>
+        <div formArrayName="PHONE">
+          <div *ngFor="let phone of phones.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of phoneValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removePhone(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addPhone()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Phone</button>
+        </div>
+      </label>
 
-    <label class="block mb-2">
-      <span class="text-gray-700">Email(s):</span>
-      <div *ngFor="let email of editingContact.EMAIL; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="email.VALUE" name="email{{i}}" class="add-select w-full">
-        <select [(ngModel)]="email.VALUE_TYPE" name="emailType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of emailValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(editingContact, 'EMAIL', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(editingContact, 'EMAIL')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Email</button>
-    </label>
+      <label class="block mb-2">
+        <span class="text-gray-700">Email(s):</span>
+        <div formArrayName="EMAIL">
+          <div *ngFor="let email of emails.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of emailValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removeEmail(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addEmail()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Email</button>
+        </div>
+      </label>
 
-    <label class="block mb-2">
-      <span class="text-gray-700">Website(s):</span>
-      <div *ngFor="let web of editingContact.WEBSITE; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="web.VALUE" name="web{{i}}" class="add-select w-full">
-        <select [(ngModel)]="web.VALUE_TYPE" name="webType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of webValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(editingContact, 'WEBSITE', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(editingContact, 'WEBSITE')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Website</button>
-    </label>
+      <label class="block mb-2">
+        <span class="text-gray-700">Website(s):</span>
+        <div formArrayName="WEBSITE">
+          <div *ngFor="let web of websites.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of webValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removeWebsite(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addWebsite()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Website</button>
+        </div>
+      </label>
 
-    <label class="block mb-2">
-      <span class="text-gray-700">Bank Name:</span>
-      <input [(ngModel)]="editingContact.BANK_NAME" name="bankName" class="add-input ">
-    </label>
+      <label class="block mb-2">
+        <span class="text-gray-700">Bank Name:</span>
+        <input formControlName="BANK_NAME" class="add-input">
+      </label>
 
-    <label class="block mb-2">
-      <span class="text-gray-700">Account Number:</span>
-      <input [(ngModel)]="editingContact.SOTK" name="accountNumber" class="add-input ">
-    </label>
+      <label class="block mb-2">
+        <span class="text-gray-700">Account Number:</span>
+        <input formControlName="SOTK" class="add-input">
+      </label>
 
-    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
-    <button type="button" (click)="cancelEdit()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-  </form>
+      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+      <button type="button" (click)="cancelEdit()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+    </form>
+  </div>
+
+  <div *ngIf="!editingContact" class="p-4 bg-white rounded shadow-md w-[50%] mx-auto">
+    <h2 class="text-xl font-bold mb-4">Add New Contact</h2>
+    <form [formGroup]="contactForm" (ngSubmit)="addContact()">
+      <label class="block mb-2">
+        <span class="text-gray-700">Name:</span>
+        <input formControlName="NAME" class="add-input">
+        <div *ngIf="contactForm.get('NAME')?.invalid && contactForm.get('NAME')?.touched" class="text-red-600">
+          Name is required.
+        </div>
+      </label>
+  
+      <label class="block mb-2">
+        <span class="text-gray-700">Address:</span>
+        <input formControlName="ADDRESS" class="add-input">
+      </label>
+     
+      <label class="block mb-2">
+        <span class="text-gray-700">Phone(s):</span>
+        <div formArrayName="PHONE">
+          <div *ngFor="let phone of phones.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of phoneValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removePhone(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addPhone()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Phone</button>
+        </div>
+        <div *ngIf="checkPhoneErrors()" class="text-red-600 mt-1">
+          Invalid phone number.
+        </div>
+      </label>
+  
+      <label class="block mb-2">
+        <span class="text-gray-700">Email(s):</span>
+        <div formArrayName="EMAIL">
+          <div *ngFor="let email of emails.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 border border-gray-300 py-1 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of emailValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removeEmail(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addEmail()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Email</button>
+        </div>
+        <div *ngIf="checkEmailErrors()" class="text-red-600 mt-1">
+          Invalid email address.
+        </div>
+      </label>
+  
+      <label class="block mb-2">
+        <span class="text-gray-700">Website(s):</span>
+        <div formArrayName="WEBSITE">
+          <div *ngFor="let web of websites.controls; let i = index" [formGroupName]="i" class="mb-2 flex items-center">
+            <input formControlName="VALUE" class="add-select w-full">
+            <select formControlName="VALUE_TYPE" class="mr-2 border border-gray-300 rounded-md py-1 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let type of webValueTypes" [value]="type">{{ type }}</option>
+            </select>
+            <button type="button" (click)="removeWebsite(i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
+          </div>
+          <button type="button" (click)="addWebsite()" class="bg-blue-500 text-white px-4 py-2 rounded">Add Website</button>
+        </div>
+        <div *ngIf="checkWebsiteErrors()" class="text-red-600 mt-1">
+          Invalid website URL.
+        </div>
+      </label>
+  
+      <label class="block mb-2">
+        <span class="text-gray-700">Bank Name:</span>
+        <input formControlName="BANK_NAME" class="add-input">
+      </label>
+  
+      <label class="block mb-2">
+        <span class="text-gray-700">Account Number:</span>
+        <input formControlName="SOTK" class="add-input">
+      </label>
+      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Contact</button>
+    </form>
+  </div>
+  
 </div>
 
-<div *ngIf="!editingContact" class="p-4 bg-white rounded shadow-md w-[50%] mx-auto">
-  <h2 class="text-xl font-bold mb-4">Add New Contact</h2>
-  <form (ngSubmit)="addContact()">
-    <label class="block mb-2">
-      <span class="text-gray-700">Name:</span>
-      <input [(ngModel)]="newContact.NAME" name="newName" class="add-input ">
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Address:</span>
-      <input [(ngModel)]="newContact.ADDRESS" name="newAddress" class="add-input ">
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Phone(s):</span>
-      <div *ngFor="let phone of newContact.PHONE; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="phone.VALUE" name="newPhone{{i}}" class="add-select w-full">
-        <select [(ngModel)]="phone.VALUE_TYPE" name="newPhoneType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of phoneValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(newContact, 'PHONE', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(newContact, 'PHONE')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Phone</button>
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Email(s):</span>
-      <div *ngFor="let email of newContact.EMAIL; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="email.VALUE" name="newEmail{{i}}" class="add-select w-full">
-        <select [(ngModel)]="email.VALUE_TYPE" name="newEmailType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of emailValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(newContact, 'EMAIL', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(newContact, 'EMAIL')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Email</button>
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Website(s):</span>
-      <div *ngFor="let web of newContact.WEBSITE; let i = index" class="mb-2 flex items-center">
-        <input [(ngModel)]="web.VALUE" name="newWeb{{i}}" class="add-select w-full">
-        <select [(ngModel)]="web.VALUE_TYPE" name="newWebType{{i}}" class="mr-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let type of webValueTypes" [value]="type">{{ type }}</option>
-        </select>
-        <button type="button" (click)="removeField(newContact, 'WEBSITE', i)" class="bg-red-500 text-white px-2 py-1 rounded">Remove</button>
-      </div>
-      <button type="button" (click)="addField(newContact, 'WEBSITE')" class="bg-blue-500 text-white px-4 py-2 rounded">Add Website</button>
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Bank Name:</span>
-      <input [(ngModel)]="newContact.BANK_NAME" name="newBankName" class="add-input ">
-    </label>
-
-    <label class="block mb-2">
-      <span class="text-gray-700">Account Number:</span>
-      <input [(ngModel)]="newContact.SOTK" name="newAccountNumber" class="add-input ">
-    </label>
-
-    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Contact</button>
-  </form>
-</div>
+          
