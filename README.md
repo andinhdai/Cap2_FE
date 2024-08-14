@@ -1,27 +1,21 @@
-# Bai2
+Cách cài và chạy dự án
+1. Cài Đặt Git
+   Trước tiên, hãy đảm bảo rằng Git đã được cài đặt trên máy tính của bạn.
+   Cài Đặt Git:
+   Truy cập trang tải xuống Git: [Git Downloads](https://git-scm.com/downloads).
+   Tải về và cài đặt phiên bản phù hợp với hệ điều hành của bạn.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.14.
+2. Clone Dự Án
+   -Mở Terminal (hoặc Command Prompt)
+   -Chạy Lệnh Clone: git clone https://github.com/andinhdai/ADT_TEST_FE.git
+   -Sau khi quá trình clone hoàn tất, di chuyển vào thư mục của dự án: cd ADT_TEST_FE
+  
+3. Cài Đặt Các Gói Phụ Thuộc
+   Vì dự án sử dụng Node.js(Angular), bạn cần cài đặt các gói phụ thuộc.
+   npm install
+    Cài đặt framework Tailwind cho angular [Tại đây](https://tailwindcss.com/docs/installation)
+4. Chạy Dự Án
+   Để chạy dự án Angular, sử dụng lệnh.
+   ng serve -o
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+*Lưu ý: Phải chạy cùng lúc client(FE) và server(BE)
